@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Order & Enquire | Shaabaz Kitchen Catering Singapore</title>
-<meta name="description" content="Get a catering quote from Shaabaz Kitchen. Send your event details on WhatsApp for weddings, events, corporate and bento orders in Singapore.">
+<meta name="description" content="Get a catering quote from Shaabaz Kitchen on WhatsApp. Buffets, bentos, festive menus and live stations. Delivery $50 per trip, self collection free.">
 <link rel="canonical" href="https://shaabazkitchen.sg/contact.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Shaabaz Kitchen">
 <meta property="og:title" content="Order & Enquire | Shaabaz Kitchen Catering Singapore">
-<meta property="og:description" content="Get a catering quote from Shaabaz Kitchen. Send your event details on WhatsApp for weddings, events, corporate and bento orders in Singapore.">
+<meta property="og:description" content="Get a catering quote from Shaabaz Kitchen on WhatsApp. Buffets, bentos, festive menus and live stations. Delivery $50 per trip, self collection free.">
 <meta property="og:url" content="https://shaabazkitchen.sg/contact.html">
 <meta property="og:image" content="https://shaabazkitchen.sg/images/og-image.png">
 <meta name="theme-color" content="#6e1f2a">
@@ -43,40 +43,50 @@
   <div class="wrap">
     <span class="eyebrow reveal">Order / Enquire</span>
     <h1 class="reveal d1">Let's plan your event</h1>
-    <p class="lead reveal d2">Fill in the form and it opens WhatsApp with your details ready to send. Or reach us any way you like below.</p>
+    <p class="lead reveal d2">Fill in the form and it opens WhatsApp with your details ready to send.</p>
   </div>
 </section>
 <section style="padding-top:10px">
-  <div class="wrap grid-2" style="align-items:start">
+  <div class="wrap"><div class="delivery reveal">
+  <div><span class="d-ico">⛟</span><div><strong>Delivery</strong>$50 per trip</div></div>
+  <div><span class="d-ico">⌂</span><div><strong>Self collection</strong>Free of charge</div></div>
+  <div><span class="d-ico">✦</span><div><strong>Live stations</strong>Add one to any buffet</div></div>
+</div></div>
+  <div class="wrap grid-2" style="align-items:start;margin-top:40px">
     <div class="card reveal">
       <form id="enquiry" data-whatsapp="6500000000">
         <div class="form-row">
-          <label>Your name<input name="name" required autocomplete="name"></label>
-          <label>Phone number<input name="phone" type="tel" required autocomplete="tel"></label>
+          <label for="f-name">Your name<input id="f-name" name="name" required autocomplete="name"></label>
+          <label for="f-phone">Phone number<input id="f-phone" name="phone" type="tel" required autocomplete="tel"></label>
         </div>
         <div class="form-row">
-          <label>Type of event
-            <select name="event">
-              <option>Wedding</option><option>Event / party</option><option>Corporate</option><option>Bentos</option><option>Biryani trays</option><option>Other</option>
+          <label for="f-event">Menu type
+            <select id="f-event" name="event">
+              <option>Buffet</option><option>Bento</option><option>Festive</option><option>Buffet + Live Station</option><option>Not sure yet</option>
             </select>
           </label>
-          <label>Event date<input name="date" type="date"></label>
+          <label for="f-date">Event date<input id="f-date" name="date" type="date"></label>
         </div>
-        <label>Number of guests<input name="guests" type="number" min="1" inputmode="numeric"></label>
-        <label>Anything else? (venue, dishes you'd like, budget)<textarea name="message" rows="4"></textarea></label>
+        <div class="form-row">
+          <label for="f-guests">Number of guests<input id="f-guests" name="guests" type="number" min="1" inputmode="numeric"></label>
+          <label for="f-get">Delivery or collection
+            <select id="f-get" name="get">
+              <option>Delivery ($50 per trip)</option><option>Self collection (free)</option>
+            </select>
+          </label>
+        </div>
+        <label for="f-msg">Anything else? (venue, dishes, budget)<textarea id="f-msg" name="message" rows="4"></textarea></label>
         <button class="btn btn-primary" type="submit">Send via WhatsApp</button>
       </form>
     </div>
     <div class="reveal d1">
-      <span class="eyebrow">Contact details</span>
-      <h2>We'd love to hear from you</h2>
+      <h2>Contact us</h2>
       <ul class="contact-list">
         <li><span class="icon card">✆</span><div><strong>WhatsApp / Call</strong><a href="https://wa.me/6500000000" target="_blank" rel="noopener">+65 [phone number]</a></div></li>
         <li><span class="icon card">✉</span><div><strong>Email</strong><a href="mailto:hello@shaabazkitchen.sg">[email address]</a></div></li>
-        <li><span class="icon card">⌂</span><div><strong>Kitchen</strong>[Kitchen address], Singapore [postal code]</div></li>
+        <li><span class="icon card">⌂</span><div><strong>Self collection point</strong>[Kitchen address], Singapore [postal code]</div></li>
         <li><span class="icon card">◷</span><div><strong>Opening hours</strong>[Mon to Sun, 9am to 9pm]</div></li>
       </ul>
-      <div class="ph alt" style="aspect-ratio:16/9;border-radius:var(--radius);margin-top:30px">Google Map goes here<br>(once we have the address)</div>
     </div>
   </div>
 </section>
@@ -106,6 +116,7 @@
         <li><a href="tel:+6500000000">Call: +65 [number]</a></li>
         <li><a href="mailto:hello@shaabazkitchen.sg">[email address]</a></li>
         <li>[Kitchen address], Singapore</li>
+        <li>Delivery $50 per trip · Self collection free</li>
       </ul>
     </div>
   </div>

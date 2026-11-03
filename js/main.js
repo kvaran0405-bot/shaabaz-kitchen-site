@@ -85,6 +85,16 @@
     }
   }
 
+  /* ---- Photos: if images/photos/<name> exists, show it in the photo spot ---- */
+  document.querySelectorAll("[data-photo]").forEach(function (el) {
+    var img = new Image();
+    img.onload = function () {
+      el.style.backgroundImage = 'url("' + el.getAttribute("data-photo") + '")';
+      el.classList.add("has-photo");
+    };
+    img.src = el.getAttribute("data-photo");
+  });
+
   /* ---- Menu tabs ---- */
   var tabs = document.querySelectorAll(".tab");
   tabs.forEach(function (tab) {
@@ -95,6 +105,13 @@
         p.hidden = p.id !== tab.getAttribute("aria-controls");
         if (!p.hidden) p.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
       });
+    });
+  });
+  // category photo tiles on the menu page open their tab
+  document.querySelectorAll(".cat-tile[data-tab]").forEach(function (tile) {
+    tile.addEventListener("click", function () {
+      var t = document.querySelector('.tab[aria-controls="' + tile.getAttribute("data-tab") + '"]');
+      if (t) t.click();
     });
   });
   // open a tab from the link, e.g. menus.html#wedding
@@ -117,6 +134,7 @@
         "Event: " + encodeURIComponent(d.get("event") || "") + "%0A" +
         "Date: " + encodeURIComponent(d.get("date") || "") + "%0A" +
         "Guests: " + encodeURIComponent(d.get("guests") || "") + "%0A" +
+        "Delivery/collection: " + encodeURIComponent(d.get("get") || "") + "%0A" +
         "Message: " + encodeURIComponent(d.get("message") || "");
       var num = form.getAttribute("data-whatsapp");
       window.open("https://wa.me/" + num + "?text=" + msg, "_blank", "noopener");

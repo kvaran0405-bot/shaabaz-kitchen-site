@@ -9,7 +9,7 @@ Plain HTML, CSS and JavaScript. No server, no build step, so it can be hosted fr
 | File | Page |
 | --- | --- |
 | `index.html` | Home |
-| `menus.html` | Menus (package cards with tabs: Wedding, Events & Corporate, Bentos, Biryani Trays) |
+| `menus.html` | Menus: four category photo tiles (Buffet, Bento, Festive, Live Station), then package cards per category |
 | `events.html` | Events & Catering |
 | `gallery.html` | Gallery |
 | `about.html` | About |
@@ -24,7 +24,8 @@ WhatsApp enquiry form. Effects turn off for visitors who ask their device for le
 - WhatsApp / phone number: replace `6500000000` everywhere (it is a placeholder)
 - Email, kitchen address, opening hours
 - Menu dishes, prices per pax, minimum orders
-- Real photos: replace each `<div class="ph">Photo coming soon</div>` with an image
+- Real photos: drop them into `images/photos/` with the names listed in `images/photos/README.md`. They appear automatically.
+- Background video: save as `images/hero.mp4` and uncomment the `<video>` line at the top of `index.html`
 - Customer reviews and names
 - Logo (currently a simple "S" mark)
 - About page numbers (year started, events catered)
