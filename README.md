@@ -15,7 +15,7 @@ Plain HTML, CSS and JavaScript. No server, no build step, so it can be hosted fr
 | `about.html` | About |
 | `contact.html` | Order / Enquire (form opens WhatsApp with the details filled in) |
 
-Colours come from Kamal's logo (gold wreath, maroon, forest green) on a deep green-black, with the logo on ivory (nav, opening curtain, footer). Layout inspired by the site Kamal picked: full-screen photo sections,
+Colours come from Kamal's logo: deep maroon backgrounds with gold accents (green only as a small accent), with the logo on ivory (nav, opening curtain, footer). Layout inspired by the site Kamal picked: full-screen photo sections,
 floating glass menu bar, side section numbers, Playfair Display + Montserrat.
 `css/style.css` holds all the styling (colours at the top). `js/main.js` holds the
 effects: opening logo curtain, hot biryani steam that rises behind the mouse (and on tap), rising golden embers,
