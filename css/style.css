@@ -518,3 +518,8 @@ input, select, textarea { background: rgba(18, 7, 8, .5); }
 @keyframes marquee { to { transform: translateX(-50%); } }
 .price { font-size: 1.5rem; }
 .trusted { flex-direction: column; align-items: stretch; }
+
+
+/* Background videos: stay hidden until a real video file is playing */
+.bg-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
+.bg-video.playing { opacity: 1; }

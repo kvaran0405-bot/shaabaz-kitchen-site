@@ -31,6 +31,15 @@
     img.src = src;
   });
 
+  /* ---- Background videos: show once playing; hide if the file is missing or motion is reduced ---- */
+  $$(".bg-video").forEach(function (v) {
+    var hide = function () { v.pause(); v.style.display = "none"; };
+    if (reduce) { hide(); return; }
+    v.addEventListener("playing", function () { v.classList.add("playing"); });
+    var srcs = $$("source", v), failed = 0;
+    srcs.forEach(function (src) { src.addEventListener("error", function () { if (++failed === srcs.length) hide(); }); });
+  });
+
   /* ---- Fade in on scroll ---- */
   var items = $$(".reveal");
   if ("IntersectionObserver" in window && !reduce) {
