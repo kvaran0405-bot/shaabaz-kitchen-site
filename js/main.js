@@ -5,15 +5,63 @@
   var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
-  /* ---- Opening curtain ---- */
+  /* ---- Opening: hot biryani steam fills the screen, then parts to reveal the site ---- */
   var loader = document.querySelector(".loader");
   var hideLoader = function () { if (loader) loader.classList.add("done"); };
-  if (reduce) hideLoader();
-  else {
-    try { if (sessionStorage.getItem("sk-seen")) hideLoader(); sessionStorage.setItem("sk-seen", "1"); } catch (e) {}
-    window.addEventListener("load", function () { setTimeout(hideLoader, 700); });
-    setTimeout(hideLoader, 2500);
-  }
+  var seen = false;
+  try { seen = !!sessionStorage.getItem("sk-seen"); sessionStorage.setItem("sk-seen", "1"); } catch (e) {}
+  if (!loader || reduce || seen) hideLoader();
+  else (function () {
+    var cv = loader.querySelector(".intro-steam"), cx = cv && cv.getContext("2d");
+    if (!cx) { setTimeout(hideLoader, 1200); return; }
+    var dpr = Math.min(1.5, window.devicePixelRatio || 1), W = innerWidth, H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // cloudy vapour textures built from many soft dots
+    var tex = [0, 1, 2].map(function () {
+      var t = document.createElement("canvas"); t.width = t.height = 160; var g = t.getContext("2d");
+      for (var k = 0; k < 90; k++) {
+        var a = Math.random() * 6.283, d = Math.pow(Math.random(), 1.5) * 55, x = 80 + Math.cos(a) * d, y = 80 + Math.sin(a) * d * 1.2, r = 10 + Math.random() * 24;
+        var gr = g.createRadialGradient(x, y, 0, x, y, r);
+        gr.addColorStop(0, "rgba(255,250,242," + (.08 + Math.random() * .09) + ")"); gr.addColorStop(1, "rgba(255,250,242,0)");
+        g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill();
+      }
+      g.globalCompositeOperation = "destination-in";
+      var f = g.createRadialGradient(80, 80, 25, 80, 80, 80); f.addColorStop(0, "#000"); f.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = f; g.fillRect(0, 0, 160, 160);
+      return t;
+    });
+    var n = W < 700 ? 70 : 120, puffs = [], start = performance.now(), parted = false, PART = 2600, END = 4200;
+    for (var i = 0; i < n; i++) puffs.push({
+      x: Math.random() * W, y: H * .25 + Math.random() * H * 1.1, r: (W < 700 ? 100 : 150) + Math.random() * 170,
+      vy: -(1.2 + Math.random() * 2), vx: (Math.random() - .5) * .6, sway: Math.random() * 6.283,
+      rot: Math.random() * 6.283, spin: (Math.random() - .5) * .006, a: .45 + Math.random() * .35, img: tex[i % 3], delay: Math.random() * 500
+    });
+    var skip = function () { if (!parted) { start = performance.now() - PART; } };
+    loader.addEventListener("pointerdown", skip);
+    var draw = function (now) {
+      var t = now - start;
+      if (!parted && t > PART) { parted = true; loader.classList.add("parting"); }
+      cx.clearRect(0, 0, W, H);
+      cx.globalCompositeOperation = "screen";
+      puffs.forEach(function (p) {
+        if (t < p.delay) return;
+        p.sway += .02;
+        if (parted) { // steam parts from the middle and drifts away
+          var dx = p.x - W / 2, dy = p.y - H / 2, d = Math.sqrt(dx * dx + dy * dy) || 1;
+          p.vx += dx / d * .35; p.vy += dy / d * .2 - .05; p.r += 1.6;
+        } else { p.vy *= .985; p.r += .5; }
+        p.x += p.vx + Math.sin(p.sway) * .6; p.y += p.vy; p.rot += p.spin;
+        var fade = parted ? Math.max(0, 1 - (t - PART) / (END - PART - 200)) : Math.min(1, (t - p.delay) / 500);
+        cx.globalAlpha = p.a * fade;
+        cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot);
+        cx.drawImage(p.img, -p.r, -p.r * 1.15, p.r * 2, p.r * 2.3); cx.restore();
+      });
+      cx.globalAlpha = 1;
+      if (t < END) requestAnimationFrame(draw); else hideLoader();
+    };
+    requestAnimationFrame(draw);
+    setTimeout(hideLoader, END + 1500); // safety net
+  })();
 
   /* ---- Mobile menu ---- */
   var toggle = document.querySelector(".menu-toggle"), links = document.querySelector(".nav-links");
@@ -39,6 +87,20 @@
     var srcs = $$("source", v), failed = 0;
     srcs.forEach(function (src) { src.addEventListener("error", function () { if (++failed === srcs.length) hide(); }); });
   });
+  // Section videos load only when near the screen, and pause when scrolled away (saves data on phones)
+  var lazyV = $$(".bg-video[data-lazy]");
+  if (!reduce && lazyV.length) {
+    if ("IntersectionObserver" in window) {
+      var vio = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          var v = e.target;
+          if (e.isIntersecting) { if (v.preload === "none") { v.preload = "auto"; v.load(); } var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+          else if (!v.paused) v.pause();
+        });
+      }, { rootMargin: "150px 0px" });
+      lazyV.forEach(function (v) { vio.observe(v); });
+    } else lazyV.forEach(function (v) { v.preload = "auto"; v.play(); });
+  }
 
   /* ---- Fade in on scroll ---- */
   var items = $$(".reveal");
