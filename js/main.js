@@ -30,33 +30,40 @@
       g.fillStyle = f; g.fillRect(0, 0, 160, 160);
       return t;
     });
-    var n = W < 700 ? 70 : 120, puffs = [], start = performance.now(), parted = false, PART = 2600, END = 4200;
-    for (var i = 0; i < n; i++) puffs.push({
-      x: Math.random() * W, y: H * .25 + Math.random() * H * 1.1, r: (W < 700 ? 100 : 150) + Math.random() * 170,
-      vy: -(1.2 + Math.random() * 2), vx: (Math.random() - .5) * .6, sway: Math.random() * 6.283,
-      rot: Math.random() * 6.283, spin: (Math.random() - .5) * .006, a: .45 + Math.random() * .35, img: tex[i % 3], delay: Math.random() * 500
-    });
+    var small = W < 700, srcs = small ? [.2, .5, .8] : [.12, .3, .5, .7, .88]; // steam columns rising from hot pots below the screen
+    var puffs = [], MAXP = small ? 140 : 260, start = performance.now(), last = start, parted = false, PART = 3200, END = 4500;
+    var emit = function (k) {
+      for (var j = 0; j < k && puffs.length < MAXP; j++) {
+        var sx = srcs[(Math.random() * srcs.length) | 0] * W + (Math.random() - .5) * W * .12;
+        puffs.push({ x: sx, y: H + 30, r: (small ? 14 : 34) + Math.random() * (small ? 16 : 30), grow: (small ? .5 : .9) + Math.random() * (small ? .6 : 1.1),
+          vy: -(3.2 + Math.random() * 3.2), vx: (Math.random() - .5) * .8, sway: Math.random() * 6.283, swayAmp: .8 + Math.random() * 1.6,
+          rot: (Math.random() - .5) * .6, spin: (Math.random() - .5) * .01, a: (small ? .38 : .5) + Math.random() * .3, img: tex[(Math.random() * 3) | 0], life: 0 });
+      }
+    };
+    for (var w = 0; w < 50; w++) { emit(4); puffs.forEach(function (p) { p.y += p.vy * 2; p.r += p.grow * 2; p.life += 2; }); }
     var skip = function () { if (!parted) { start = performance.now() - PART; } };
     loader.addEventListener("pointerdown", skip);
     var draw = function (now) {
-      var t = now - start;
+      var t = now - start, dt = Math.min(3, (now - last) / 16.7); last = now;
       if (!parted && t > PART) { parted = true; loader.classList.add("parting"); }
+      if (!parted) emit(small ? 2 : 5);
       cx.clearRect(0, 0, W, H);
       cx.globalCompositeOperation = "screen";
+      var alive = [];
       puffs.forEach(function (p) {
-        if (t < p.delay) return;
-        p.sway += .02;
-        if (parted) { // steam parts from the middle and drifts away
-          var dx = p.x - W / 2, dy = p.y - H / 2, d = Math.sqrt(dx * dx + dy * dy) || 1;
-          p.vx += dx / d * .35; p.vy += dy / d * .2 - .05; p.r += 1.6;
-        } else { p.vy *= .985; p.r += .5; }
-        p.x += p.vx + Math.sin(p.sway) * .6; p.y += p.vy; p.rot += p.spin;
-        var fade = parted ? Math.max(0, 1 - (t - PART) / (END - PART - 200)) : Math.min(1, (t - p.delay) / 500);
-        cx.globalAlpha = p.a * fade;
+        p.life += dt; p.sway += .035 * dt;
+        if (parted) { var dx = p.x - W / 2, d = Math.abs(dx) || 1; p.vx += dx / d * .5 * dt; p.vy -= .08 * dt; }
+        p.x += (p.vx + Math.sin(p.sway) * p.swayAmp) * dt; p.y += p.vy * dt; p.r += p.grow * dt; p.rot += p.spin * dt;
+        // thick and hot near the pots, thinning into wisps as it rises
+        var h = Math.max(0, Math.min(1, p.y / H)), a = p.a * (.15 + .85 * h) * Math.min(1, p.life / 12);
+        if (parted) a *= Math.max(0, 1 - (t - PART) / (END - PART - 150));
+        if (a <= .01 || p.y + p.r < -50) return;
+        cx.globalAlpha = a;
         cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot);
-        cx.drawImage(p.img, -p.r, -p.r * 1.15, p.r * 2, p.r * 2.3); cx.restore();
+        cx.drawImage(p.img, -p.r * .8, -p.r * 1.5, p.r * 1.6, p.r * 3); cx.restore();
+        alive.push(p);
       });
-      cx.globalAlpha = 1;
+      puffs = alive; cx.globalAlpha = 1;
       if (t < END) requestAnimationFrame(draw); else hideLoader();
     };
     requestAnimationFrame(draw);
