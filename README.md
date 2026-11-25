@@ -15,10 +15,10 @@ Plain HTML, CSS and JavaScript. No server, no build step, so it can be hosted fr
 | `about.html` | About |
 | `contact.html` | Order / Enquire (form opens WhatsApp with the details filled in) |
 
-Dark, warm and gold look inspired by the layout Kamal picked: full-screen photo sections,
+Colours come from Kamal's logo (gold wreath, maroon, forest green) on a deep green-black, with the logo on ivory (nav, opening curtain, footer). Layout inspired by the site Kamal picked: full-screen photo sections,
 floating glass menu bar, side section numbers, Playfair Display + Montserrat.
 `css/style.css` holds all the styling (colours at the top). `js/main.js` holds the
-effects: opening logo curtain, gold cursor ripple (also on tap), rising golden embers,
+effects: opening logo curtain, hot biryani steam that rises behind the mouse (and on tap), rising golden embers,
 fanned dish slider, count-up numbers, tilting cards, magnetic buttons, soft parallax,
 scroll progress bar, menu tabs and the WhatsApp enquiry form. Effects turn off for visitors who ask their device for less motion.
 
@@ -30,7 +30,7 @@ scroll progress bar, menu tabs and the WhatsApp enquiry form. Effects turn off f
 - Real photos: drop them into `images/photos/` with the names listed in `images/photos/README.md`. They appear automatically.
 - Background video: save as `images/hero.mp4` and uncomment the `<video>` line at the top of `index.html`
 - Customer reviews and names
-- Logo (currently a simple gold biryani-pot mark drawn in code, `LOGO_SVG`)
+- A sharper logo file (the current `images/logo.png` was cut from a small picture)
 - Instagram and Facebook links (currently `#`)
 - About page numbers (year started, events catered)
 - Add phone and address to the structured data in `index.html` once known

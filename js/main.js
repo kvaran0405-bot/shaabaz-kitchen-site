@@ -100,8 +100,8 @@
         p.y -= p.s; p.w += .02; p.x += Math.sin(p.w) * .3;
         if (p.y < -10) parts[k] = make(true);
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283);
-        ctx.fillStyle = "rgba(232,186,140," + (p.a * Math.min(1, p.y / H + .2)).toFixed(2) + ")";
-        ctx.shadowColor = "rgba(232,186,140,.8)"; ctx.shadowBlur = 6; ctx.fill();
+        ctx.fillStyle = "rgba(226,182,90," + (p.a * Math.min(1, p.y / H + .2)).toFixed(2) + ")";
+        ctx.shadowColor = "rgba(226,182,90,.8)"; ctx.shadowBlur = 6; ctx.fill();
       });
       requestAnimationFrame(draw);
     };
@@ -131,23 +131,52 @@
     go(0); restart();
   });
 
-  /* ---- Mouse effects: ripple, gold dot, tilt cards, magnetic buttons ---- */
+  /* ---- Mouse effects: biryani steam, gold dot, tilt cards, magnetic buttons ---- */
   if (!reduce) {
-    var layer = document.createElement("div"); layer.className = "ripple-layer"; layer.setAttribute("aria-hidden", "true"); document.body.appendChild(layer);
-    var spawn = function (x, y, big) {
-      var r = document.createElement("span"); r.className = big ? "ripple big" : "ripple";
-      r.style.left = x + "px"; r.style.top = y + "px"; layer.appendChild(r);
-      r.addEventListener("animationend", function () { r.remove(); });
+    /* Hot dum-biryani steam: soft puffs rise and fade behind the mouse (or a finger tap) */
+    var sc = document.createElement("canvas"); sc.className = "steam-cursor"; sc.setAttribute("aria-hidden", "true");
+    document.body.appendChild(sc);
+    var sx2 = sc.getContext("2d"), puffs = [], MAX = fine ? 90 : 40, sdpr = Math.min(2, devicePixelRatio || 1), running = false;
+    var sres = function () { sc.width = innerWidth * sdpr; sc.height = innerHeight * sdpr; sx2.setTransform(sdpr, 0, 0, sdpr, 0, 0); };
+    sres(); addEventListener("resize", sres);
+    // one soft white blob, drawn once and stamped for every puff
+    var blob = document.createElement("canvas"); blob.width = blob.height = 64;
+    var bctx = blob.getContext("2d"), grd = bctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grd.addColorStop(0, "rgba(255,250,240,.55)"); grd.addColorStop(.45, "rgba(255,248,235,.22)"); grd.addColorStop(1, "rgba(255,248,235,0)");
+    bctx.fillStyle = grd; bctx.fillRect(0, 0, 64, 64);
+    var tick = function () {
+      sx2.clearRect(0, 0, innerWidth, innerHeight);
+      var alive = [];
+      puffs.forEach(function (p) {
+        p.life++;
+        if (p.life > p.max) return;
+        p.sway += .05; p.x += p.vx + Math.sin(p.sway) * .45; p.y += p.vy; p.vy *= .995; p.r += p.grow;
+        var t = p.life / p.max, a = t < .2 ? t / .2 : 1 - (t - .2) / .8;
+        sx2.globalAlpha = Math.max(0, a) * .75;
+        sx2.drawImage(blob, p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
+        alive.push(p);
+      });
+      puffs = alive; sx2.globalAlpha = 1;
+      if (puffs.length) requestAnimationFrame(tick); else running = false;
     };
-    var last = 0, lx = 0, ly = 0, dot = null;
+    var puff = function (x, y, n, power) {
+      for (var i = 0; i < n; i++) {
+        if (puffs.length >= MAX) puffs.shift();
+        puffs.push({ x: x + (Math.random() - .5) * 14, y: y + (Math.random() - .5) * 8, r: 10 + Math.random() * 14,
+          vx: (Math.random() - .5) * .5, vy: -(.6 + Math.random() * .9) * power, life: 0, max: 70 + Math.random() * 50,
+          sway: Math.random() * 6.283, grow: .35 + Math.random() * .35 });
+      }
+      if (!running) { running = true; requestAnimationFrame(tick); }
+    };
+    var lastT = 0, lx = 0, ly = 0, dot = null;
     if (fine) { dot = document.createElement("div"); dot.className = "cursor-dot"; dot.setAttribute("aria-hidden", "true"); document.body.appendChild(dot); }
     addEventListener("pointermove", function (e) {
       if (e.pointerType !== "mouse") return;
       if (dot) { dot.style.left = e.clientX + "px"; dot.style.top = e.clientY + "px"; dot.classList.add("on"); }
-      var now = performance.now();
-      if (now - last > 70 && Math.hypot(e.clientX - lx, e.clientY - ly) > 24) { spawn(e.clientX, e.clientY, false); last = now; lx = e.clientX; ly = e.clientY; }
+      var now = performance.now(), dist = Math.hypot(e.clientX - lx, e.clientY - ly);
+      if (now - lastT > 40 && dist > 8) { puff(e.clientX, e.clientY, dist > 40 ? 2 : 1, 1); lastT = now; lx = e.clientX; ly = e.clientY; }
     }, { passive: true });
-    addEventListener("pointerdown", function (e) { spawn(e.clientX, e.clientY, true); }, { passive: true });
+    addEventListener("pointerdown", function (e) { puff(e.clientX, e.clientY, 7, 1.4); }, { passive: true });
     document.addEventListener("mouseleave", function () { if (dot) dot.classList.remove("on"); });
     if (dot) $$("a, button, input, select, textarea").forEach(function (el) {
       el.addEventListener("mouseenter", function () { dot.classList.add("hover"); });
