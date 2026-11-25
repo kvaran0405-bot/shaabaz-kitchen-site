@@ -17,3 +17,7 @@ ffmpeg -i input.mov -t 10 -an -vf "scale=1280:-2,fps=24" -c:v libx264 -crf 28 -p
 ffmpeg -i input.mov -t 10 -an -vf "scale=1280:-2,fps=24" -c:v libvpx-vp9 -crf 38 -b:v 0 hero.webm
 ffmpeg -i hero.mp4 -ss 2 -frames:v 1 -q:v 3 ../images/photos/hero.jpg
 ```
+
+## Current placeholder
+
+`hero.mp4` / `hero.webm` (and `images/photos/hero.jpg`) are a temporary animated placeholder: a drawn copper biryani pot with rising steam, rendered in code for this project (no stock footage, no licence needed). Replace them with Kamal's own slow-motion footage using the same file names.

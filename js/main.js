@@ -142,38 +142,59 @@
 
   /* ---- Mouse effects: biryani steam, gold dot, tilt cards, magnetic buttons ---- */
   if (!reduce) {
-    /* Hot dum-biryani steam: soft puffs rise and fade behind the mouse (or a finger tap) */
+    /* Hot dum-biryani steam: wispy, cloudy puffs that curl upward and fade behind the mouse (or a tap) */
     var sc = document.createElement("canvas"); sc.className = "steam-cursor"; sc.setAttribute("aria-hidden", "true");
     document.body.appendChild(sc);
-    var sx2 = sc.getContext("2d"), puffs = [], MAX = fine ? 90 : 40, sdpr = Math.min(2, devicePixelRatio || 1), running = false;
+    var sx2 = sc.getContext("2d"), puffs = [], MAX = fine ? 160 : 60, sdpr = Math.min(2, devicePixelRatio || 1), running = false;
     var sres = function () { sc.width = innerWidth * sdpr; sc.height = innerHeight * sdpr; sx2.setTransform(sdpr, 0, 0, sdpr, 0, 0); };
     sres(); addEventListener("resize", sres);
-    // one soft white blob, drawn once and stamped for every puff
-    var blob = document.createElement("canvas"); blob.width = blob.height = 64;
-    var bctx = blob.getContext("2d"), grd = bctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-    grd.addColorStop(0, "rgba(255,250,240,.55)"); grd.addColorStop(.45, "rgba(255,248,235,.22)"); grd.addColorStop(1, "rgba(255,248,235,0)");
-    bctx.fillStyle = grd; bctx.fillRect(0, 0, 64, 64);
+    // A few cloudy steam textures, each built once from many soft dots so they look like real vapour, not circles
+    var sprites = [0, 1, 2, 3].map(function () {
+      var cv2 = document.createElement("canvas"); cv2.width = cv2.height = 128;
+      var g2 = cv2.getContext("2d");
+      for (var k = 0; k < 70; k++) {
+        var ang = Math.random() * 6.283, dist = Math.pow(Math.random(), 1.6) * 44;
+        var cx = 64 + Math.cos(ang) * dist, cy = 64 + Math.sin(ang) * dist * 1.25, rr = 8 + Math.random() * 18;
+        var gr = g2.createRadialGradient(cx, cy, 0, cx, cy, rr);
+        gr.addColorStop(0, "rgba(255,252,246," + (.07 + Math.random() * .08) + ")"); gr.addColorStop(1, "rgba(255,252,246,0)");
+        g2.fillStyle = gr; g2.beginPath(); g2.arc(cx, cy, rr, 0, 6.283); g2.fill();
+      }
+      // soften the outer edge so no sprite shows a hard border
+      g2.globalCompositeOperation = "destination-in";
+      var fade = g2.createRadialGradient(64, 64, 20, 64, 64, 64);
+      fade.addColorStop(0, "rgba(0,0,0,1)"); fade.addColorStop(1, "rgba(0,0,0,0)");
+      g2.fillStyle = fade; g2.fillRect(0, 0, 128, 128);
+      return cv2;
+    });
     var tick = function () {
       sx2.clearRect(0, 0, innerWidth, innerHeight);
+      sx2.globalCompositeOperation = "screen";
       var alive = [];
       puffs.forEach(function (p) {
         p.life++;
         if (p.life > p.max) return;
-        p.sway += .05; p.x += p.vx + Math.sin(p.sway) * .45; p.y += p.vy; p.vy *= .995; p.r += p.grow;
-        var t = p.life / p.max, a = t < .2 ? t / .2 : 1 - (t - .2) / .8;
-        sx2.globalAlpha = Math.max(0, a) * .75;
-        sx2.drawImage(blob, p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
+        p.sway += p.swaySpeed;
+        p.vx *= .985; p.vy = p.vy * .992 - .012;           // hot air keeps lifting
+        p.x += p.vx + Math.sin(p.sway) * p.curl; p.y += p.vy;
+        p.r += p.grow; p.rot += p.spin;
+        var t = p.life / p.max, a = t < .12 ? t / .12 : Math.pow(1 - (t - .12) / .88, 1.4);
+        sx2.save(); sx2.translate(p.x, p.y); sx2.rotate(p.rot); sx2.scale(1, p.stretch);
+        sx2.globalAlpha = Math.max(0, a) * p.alpha;
+        sx2.drawImage(p.img, -p.r, -p.r, p.r * 2, p.r * 2);
+        sx2.restore();
         alive.push(p);
       });
-      puffs = alive; sx2.globalAlpha = 1;
+      puffs = alive; sx2.globalAlpha = 1; sx2.globalCompositeOperation = "source-over";
       if (puffs.length) requestAnimationFrame(tick); else running = false;
     };
-    var puff = function (x, y, n, power) {
+    var puff = function (x, y, n, power, dx, dy) {
       for (var i = 0; i < n; i++) {
         if (puffs.length >= MAX) puffs.shift();
-        puffs.push({ x: x + (Math.random() - .5) * 14, y: y + (Math.random() - .5) * 8, r: 10 + Math.random() * 14,
-          vx: (Math.random() - .5) * .5, vy: -(.6 + Math.random() * .9) * power, life: 0, max: 70 + Math.random() * 50,
-          sway: Math.random() * 6.283, grow: .35 + Math.random() * .35 });
+        puffs.push({ x: x + (Math.random() - .5) * 10, y: y + (Math.random() - .5) * 6, r: 14 + Math.random() * 16,
+          vx: (dx || 0) * .08 + (Math.random() - .5) * .6, vy: -(.5 + Math.random() * .8) * power + (dy || 0) * .05,
+          life: 0, max: 90 + Math.random() * 70, sway: Math.random() * 6.283, swaySpeed: .03 + Math.random() * .04,
+          curl: .3 + Math.random() * .6, grow: .45 + Math.random() * .5, rot: Math.random() * 6.283, spin: (Math.random() - .5) * .02,
+          stretch: 1.1 + Math.random() * .5, alpha: .32 + Math.random() * .26, img: sprites[(Math.random() * sprites.length) | 0] });
       }
       if (!running) { running = true; requestAnimationFrame(tick); }
     };
@@ -183,9 +204,9 @@
       if (e.pointerType !== "mouse") return;
       if (dot) { dot.style.left = e.clientX + "px"; dot.style.top = e.clientY + "px"; dot.classList.add("on"); }
       var now = performance.now(), dist = Math.hypot(e.clientX - lx, e.clientY - ly);
-      if (now - lastT > 40 && dist > 8) { puff(e.clientX, e.clientY, dist > 40 ? 2 : 1, 1); lastT = now; lx = e.clientX; ly = e.clientY; }
+      if (now - lastT > 28 && dist > 6) { puff(e.clientX, e.clientY, dist > 40 ? 3 : 2, 1, e.clientX - lx, e.clientY - ly); lastT = now; lx = e.clientX; ly = e.clientY; }
     }, { passive: true });
-    addEventListener("pointerdown", function (e) { puff(e.clientX, e.clientY, 7, 1.4); }, { passive: true });
+    addEventListener("pointerdown", function (e) { puff(e.clientX, e.clientY, 14, 1.6); }, { passive: true });
     document.addEventListener("mouseleave", function () { if (dot) dot.classList.remove("on"); });
     if (dot) $$("a, button, input, select, textarea").forEach(function (el) {
       el.addEventListener("mouseenter", function () { dot.classList.add("hover"); });
