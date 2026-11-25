@@ -78,7 +78,7 @@
       var t0 = performance.now(), keep = el.textContent;
       var step = function (t) {
         var p = Math.min(1, (t - t0) / 1600), v = Math.round(target * (1 - Math.pow(1 - p, 3)));
-        el.textContent = "[" + v + suf + "]";
+        el.textContent = v.toLocaleString() + suf;
         if (p < 1) requestAnimationFrame(step); else el.textContent = keep;
       };
       requestAnimationFrame(step);

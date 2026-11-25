@@ -24,8 +24,8 @@ scroll progress bar, menu tabs and the WhatsApp enquiry form. Effects turn off f
 
 ## Still to fill in (search for `[` in the HTML)
 
-- WhatsApp / phone number: replace `6500000000` everywhere (it is a placeholder)
-- Email, kitchen address, opening hours
+- Opening hours (not on the old site)
+- Festive menus, and buffet / live station prices (shown as "Quote")
 - Menu dishes, prices per pax, minimum orders
 - Real photos: drop them into `images/photos/` with the names listed in `images/photos/README.md`. They appear automatically.
 - Background video: save as `images/hero.mp4` and uncomment the `<video>` line at the top of `index.html`

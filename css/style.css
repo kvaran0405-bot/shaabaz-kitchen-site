@@ -505,3 +505,16 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--g
 input, select, textarea { background: rgba(18, 7, 8, .5); }
 .facts i { background: rgba(31, 77, 43, .55); }
 .svc:hover .arrow { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+
+/* Trusted-by marquee */
+.trusted { padding-block: 110px 90px; background: linear-gradient(180deg, var(--bg), #230d0e 50%, var(--bg)); }
+.marquee { margin-top: 50px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.marquee-track { display: flex; gap: 16px; width: max-content; animation: marquee 60s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+.marquee-track span {
+  white-space: nowrap; padding: 12px 24px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--glass); font-family: var(--serif); font-size: 1.05rem; color: var(--cream);
+}
+@keyframes marquee { to { transform: translateX(-50%); } }
+.price { font-size: 1.5rem; }
+.trusted { flex-direction: column; align-items: stretch; }
