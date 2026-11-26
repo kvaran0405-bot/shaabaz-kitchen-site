@@ -1,1 +1,47 @@
-# shaabaz-kitchen-site
+# Shaabaz Kitchen website
+
+The new website for [shaabazkitchen.sg](https://shaabazkitchen.sg/).
+Plain HTML, CSS and JavaScript. No server, no build step, so it can be hosted free
+(Netlify, Vercel or GitHub Pages) and stays live 24/7.
+
+## Pages
+
+| File | Page |
+| --- | --- |
+| `index.html` | Home |
+| `menus.html` | Menus: four category photo tiles (Buffet, Bento, Festive, Live Station), then package cards per category |
+| `events.html` | Events & Catering |
+| `gallery.html` | Gallery |
+| `about.html` | About |
+| `contact.html` | Order / Enquire (form opens WhatsApp with the details filled in) |
+
+Colours come from Kamal's logo: deep maroon backgrounds with gold accents (green only as a small accent), with the logo on ivory (nav, opening curtain, footer). Layout inspired by the site Kamal picked: full-screen photo sections,
+floating glass menu bar, side section numbers, Playfair Display + Montserrat.
+`css/style.css` holds all the styling (colours at the top). `js/main.js` holds the
+effects: opening logo curtain, hot biryani steam that rises behind the mouse (and on tap), rising golden embers,
+fanned dish slider, count-up numbers, tilting cards, magnetic buttons, soft parallax,
+scroll progress bar, menu tabs and the WhatsApp enquiry form. Effects turn off for visitors who ask their device for less motion.
+
+## Still to fill in (search for `[` in the HTML)
+
+- Opening hours (not on the old site)
+- Festive menus, and buffet / live station prices (shown as "Quote")
+- Menu dishes, prices per pax, minimum orders
+- Real photos: drop them into `images/photos/` with the names listed in `images/photos/README.md`. They appear automatically.
+- Background video: save as `images/hero.mp4` and uncomment the `<video>` line at the top of `index.html`
+- Customer reviews and names
+- A sharper logo file (the current `images/logo.png` was cut from a small picture)
+- Instagram and Facebook links (currently `#`)
+- About page numbers (year started, events catered)
+- Add phone and address to the structured data in `index.html` once known
+
+## Google
+
+Each page has its own title and description, `sitemap.xml` and `robots.txt` are ready,
+and the home page has structured data that tells Google this is a caterer in Singapore.
+After launch: submit the sitemap in Google Search Console and set up a Google Business Profile.
+
+## Preview locally
+
+Open `index.html` in a browser, or run `python3 -m http.server` in this folder and go to
+http://localhost:8000.
