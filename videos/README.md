@@ -36,4 +36,4 @@ and warm gold sparkles with drifting steam (the rest). Replace them with Kamal's
 
 ## Steam opening
 
-The full-screen steam that clears to show the site is drawn live in `js/main.js` (no video file). It plays once per visit, can be skipped with a tap, and is skipped for people who turn off motion.
+The full-screen steam that clears to show the site is drawn live in `js/main.js` (no video file). It plays every time the home page opens or refreshes (not on the other pages), can be skipped with a tap, and is skipped for people who turn off motion.

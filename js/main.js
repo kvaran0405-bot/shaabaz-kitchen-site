@@ -8,9 +8,9 @@
   /* ---- Opening: hot biryani steam fills the screen, then parts to reveal the site ---- */
   var loader = document.querySelector(".loader");
   var hideLoader = function () { if (loader) loader.classList.add("done"); };
-  var seen = false;
-  try { seen = !!sessionStorage.getItem("sk-seen"); sessionStorage.setItem("sk-seen", "1"); } catch (e) {}
-  if (!loader || reduce || seen) hideLoader();
+  // Plays every time the home page opens or refreshes; other pages open straight away
+  var home = !!document.querySelector(".scene.hero");
+  if (!loader || reduce || !home) hideLoader();
   else (function () {
     var cv = loader.querySelector(".intro-steam"), cx = cv && cv.getContext("2d");
     if (!cx) { setTimeout(hideLoader, 1200); return; }
